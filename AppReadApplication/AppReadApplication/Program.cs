@@ -31,6 +31,7 @@ namespace AppReadApplication
             using (var connection = configConnection.CreateConnection())
                 using (var virtualConnection = connection.CreateModel())
             {
+                //Declare a queue
                 virtualConnection.QueueDeclare(queue: "",
                                             durable: true,
                                             autoDelete: false,
