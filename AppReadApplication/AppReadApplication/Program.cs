@@ -13,12 +13,12 @@ namespace AppReadApplication
         {
             string firstName;
             string message = "";
-         
 
-            //input the name
+            //Promp the user to enter their firstname
             Console.WriteLine("Please enter your first name");
             firstName = Console.ReadLine();
 
+            //Configure the connection to RabbitMQ
             var configConnection = new ConnectionFactory()
             {
                 HostName = "localhost",
@@ -27,6 +27,7 @@ namespace AppReadApplication
                 Port = 15672
             };
 
+            //Establish the connection
             using (var connection = configConnection.CreateConnection())
                 using (var virtualConnection = connection.CreateModel())
             {
@@ -36,6 +37,7 @@ namespace AppReadApplication
                                             arguments: null,
                                             exclusive: false);
 
+                //Create message to the queue
                 message = "Hello my name is " + firstName + "";
                 var body = Encoding.UTF8.GetBytes(message);
 
@@ -43,6 +45,7 @@ namespace AppReadApplication
                     routingKey: "",
                     basicProperties: null,
                     body: body);
+
                 Console.WriteLine("You have successfully sent the message");
             }
 
