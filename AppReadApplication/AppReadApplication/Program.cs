@@ -12,18 +12,39 @@ namespace AppReadApplication
         static void Main(string[] args)
         {
             string firstName;
-            string connection;
-            string channel;
+            string message = "";
+         
 
             //input the name
             Console.WriteLine("Please enter your first name");
             firstName = Console.ReadLine();
 
-            connection = new ConnectionFactory()
+            var configConnection = new ConnectionFactory()
             {
+                HostName = "localhost",
+                UserName = "guest",
+                Password = "guest",
+                Port = 15672
+            };
 
+            using (var connection = configConnection.CreateConnection())
+                using (var virtualConnection = connection.CreateModel())
+            {
+                virtualConnection.QueueDeclare(queue: "",
+                                            durable: true,
+                                            autoDelete: false,
+                                            arguments: null,
+                                            exclusive: false);
+
+                message = "Hello my name is " + firstName + "";
+                var body = Encoding.UTF8.GetBytes(message);
+
+                virtualConnection.BasicPublish(exchange: "",
+                    routingKey: "",
+                    basicProperties: null,
+                    body: body);
+                Console.WriteLine("You have successfully sent the message");
             }
-
 
         }
     }
